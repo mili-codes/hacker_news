@@ -69,7 +69,17 @@ class ETF():
                     'sec-fetch-mode': 'cors',
                     'sec-fetch-site': 'same-origin'
                 }
+
+    def buy_sell(self, symbol):
+        if symbol == '': return "enter valid symbol"
+        det = self.get_etf_details(symbol)
+        # min_ohl_ltp = list(map(float,[det['open'],det['high'],det['low'],det['ltp']]))
+        nav, ltp = det['nav'], det['ltP']
+        if float(nav) >= float(ltp):
+            print(f"buy nav is {nav} and ltp is {ltp}")
+        else:
+            print(f"sell nav is {nav} and ltp is {ltp}")
+
 etf = ETF()
 
-sym = etf.get_etf_details("mafang")
-print(sym)
+sym = etf.buy_sell("mafang")
