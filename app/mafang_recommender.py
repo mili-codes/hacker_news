@@ -29,7 +29,8 @@ class ETF():
             self.conn = self._connection()
             resp = self.conn.getresponse()
             status_code = resp.getcode()
-            print("please wait connecting", '.'*c)
+            if c%10 ==0:
+                print("please wait connecting", '.'*c//10)
             c +=1
 
         print("Connection successful with code ",status_code)
