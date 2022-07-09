@@ -1,7 +1,8 @@
-from nsetools import *
-from nsetools.utils import byte_adaptor
+# from nsetools import *
+# from nsetools.utils import byte_adaptor
 import json
 from http.client import HTTPSConnection
+import pandas as pd
 # from pprint import pprint
 
 class ETF():
@@ -16,46 +17,7 @@ class ETF():
     def _connection(self):
         conn = HTTPSConnection(self.nse_url)
         conn.request("GET",self.etf_endpoint,headers=self.etf_headers)
-        return conn
-
-    def get_etf_list(self,as_json=False):
-        """
-        :return: a list of dictionaries containing ets and their details
-        """
-        resp = self.conn.getresponse()
-        status_code = resp.getcode()
-        c = 0
-        while status_code != 200:
-            self.conn = self._connection()
-            resp = self.conn.getresponse()
-            status_code = resp.getcode()
-            if c%10 ==0:
-                print("please wait connecting", '.'*c//10)
-            c +=1
-
-        print("Connection successful with code ",status_code)
-        data = resp.read().decode('utf-8')
-
-        return json.loads(data) if as_json else data
-
-        # clean the output and make appropriate type conversions
-        # resp_list = [self.clean_server_response(item) for item in res_dict['data']]
-        # return data self.render_response(resp_list, as_json)
-       
-            
-
-    def get_etf_details(self, symbol):
-        """
-        :return: details of a etf
-        """
-        resp_list = self.get_etf_list(as_json=True)
-        search_flag = False
-        for item in resp_list["data"]:
-            if item['symbol'] == symbol.upper():
-                search_flag = True
-                break
-        return item if search_flag else None
-
+        return conn.getresponse()
     
     def _nse_headers(self):
         """
@@ -71,6 +33,40 @@ class ETF():
                     'sec-fetch-site': 'same-origin'
                 }
 
+    def get_etf_list(self,as_json=False):
+        """
+        :return: a list of dictionaries containing ets and their details
+        """
+        c = 0
+        while self.conn.getcode() != 200:
+            self.conn = self._connection()
+            if c%10 ==0:
+                print("please wait connecting", '.'*(c//10), sep="")
+            c +=1
+
+        print("Connection successful with code ",self.conn.getcode())
+        data = self.conn.read().decode('utf-8')
+
+        return json.loads(data) if as_json else data
+
+        # clean the output and make appropriate type conversions
+        # resp_list = [self.clean_server_response(item) for item in res_dict['data']]
+        # return data self.render_response(resp_list, as_json)
+       
+
+    def get_etf_details(self, symbol):
+        """
+        :return: details of a etf
+        """
+        resp_list = self.get_etf_list(as_json=True)
+        search_flag = False
+        for item in resp_list["data"]:
+            if item['symbol'] == symbol.upper():
+                search_flag = True
+                break
+        return item if search_flag else None
+
+    
     def buy_sell(self, symbol):
         if symbol == '': return "enter valid symbol"
         det = self.get_etf_details(symbol)
@@ -80,7 +76,21 @@ class ETF():
             print(f"buy nav is {nav} and ltp is {ltp}")
         else:
             print(f"sell nav is {nav} and ltp is {ltp}")
+    
+    def get_etf_json_file(self):
+        with open("etf_data_json.json", mode="w") as f:
+            json.dump(self.get_etf_list(), f,indent=4)
+    
+    def get_etf_csv_file(self):
+        data = self.get_etf_list(as_json=True)["data"]
+        df = pd.json_normalize(data)
+        print(df[['symbol', 'assets', 'open', 'high', 'low', 'ltP', 'chn', 'per', 'qty', 'trdVal', 'nav', 'wkhi', 'wklo', 'yPC', 'mPC', 'prevClose', 'nearWKH', 'nearWKL', 'date30dAgo', 'perChange30d', 'meta.companyName', 'meta.isin']])
+        print(df.head(n=2))
+        df.to_csv("etf_data_csv.csv")
+        
+
 
 etf = ETF()
 
-sym = etf.buy_sell("mafang")
+# sym = etf.buy_sell("MASPTOP50")
+etf.get_etf_csv_file()
