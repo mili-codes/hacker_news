@@ -1,6 +1,7 @@
+from datetime import datetime, timezone
+
+
 input_file = "input.txt"
-#import csv
-import time
 out_file = "output.txt"
 
 with open(input_file, "r") as time_file:
@@ -10,7 +11,9 @@ with open(input_file, "r") as time_file:
         l = line.split(":")
         epoch_timestamp = l[0]
         print(epoch_timestamp)
-        epoch_timestamp = "converted date time"
+        # epoch_timestamp = "converted date time" inserting format conversion
+        epoch_timestamp = datetime.fromtimestamp(float(epoch_timestamp), tz=timezone.utc)
+        epoch_timestamp = epoch_timestamp.strftime("%a %d %b %H:%M:%S:%f000 %Z %Y")
         l[0] = epoch_timestamp
         ol = ":".join(l)
         out_lines.append(ol)
