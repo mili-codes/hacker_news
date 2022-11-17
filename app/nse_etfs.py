@@ -84,13 +84,11 @@ class ETF():
     def get_etf_csv_file(self):
         data = self.get_etf_list(as_json=True)["data"]
         df = pd.json_normalize(data)
-        print(df[['symbol', 'assets', 'open', 'high', 'low', 'ltP', 'chn', 'per', 'qty', 'trdVal', 'nav', 'wkhi', 'wklo', 'yPC', 'mPC', 'prevClose', 'nearWKH', 'nearWKL', 'date30dAgo', 'perChange30d', 'meta.companyName', 'meta.isin']])
-        print(df.head(n=2))
         df.to_csv("etf_data_csv.csv")
         
 
 
 etf = ETF()
 
-# sym = etf.buy_sell("MASPTOP50")
-etf.get_etf_csv_file()
+sym = etf.buy_sell("mafang")
+# etf.get_etf_csv_file()

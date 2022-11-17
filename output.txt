@@ -1,0 +1,6 @@
+converted date time: wlan0: State: SCANNING -> ASSOCIATING
+converted date time: wlan0: State: ASSOCIATING -> ASSOCIATED
+converted date time: wlan0: State: ASSOCIATED -> 4WAY_HANDSHAKE
+converted date time: wlan0: State: 4WAY_HANDSHAKE -> 4WAY_HANDSHAKE
+converted date time: wlan0: State: 4WAY_HANDSHAKE -> GROUP_HANDSHAKE
+converted date time: wlan0: State: GROUP_HANDSHAKE -> COMPLETED
