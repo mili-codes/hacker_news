@@ -11,7 +11,7 @@ class Heap:
         self.heap = arr.copy()
         for i in range(len(self.heap))[::-1]:
             self._siftdown(i)
-            
+
     def _siftup(self, i):
         parent = (i-1)//2
         while i!=0 and self.heap[i]<self.heap[parent]:
@@ -21,14 +21,14 @@ class Heap:
     
     def _siftdown(self, i):
         left = 2*i+1
-        right = 2*i+1
+        right = 2*i+2
         heap_len = len(self.heap)
         while (left < heap_len and self.heap[i] > self.heap[left]) or (right < heap_len and self.heap[i] > self.heap[right]):
             smallest = left if(right>=heap_len or self.heap[left]<self.heap[right]) else right
             self.heap[i], self.heap[smallest] = self.heap[smallest], self.heap[i]
             i = smallest
             left = 2*i+1
-            right = 2*i+1
+            right = 2*i+2
     
     def insert(self, element):
         self.heap.append(element)

@@ -1,4 +1,4 @@
-chat = " we are having a discussion "
+chat = " we are having a discussion"
 
 # ew era gnivah
 
